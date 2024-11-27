@@ -1,6 +1,11 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { FaRegEye } from "react-icons/fa6";
+import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import AxiosToastError from "../utils/AxiosToastError";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -12,6 +17,7 @@ const Register = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const HandleOnChange = (e) => {
     const { name, value } = e.target;
@@ -22,12 +28,34 @@ const Register = () => {
 
   const validateValue = Object.values(data).every((value) => value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      console.log(data);
+      if (data.password !== data.confirmPassword) {
+        toast.error("Passwords do not match");
+      }
+
+      const response = await Axios({
+        ...SummaryApi.register,
+        data: data,
+      });
+
+      if (response.data.error) {
+        toast.error(response.data.message);
+      }
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        navigate("/login");
+      }
     } catch (error) {
-      console.log(error);
+      AxiosToastError(error);
     }
   };
 
@@ -118,6 +146,7 @@ const Register = () => {
           </div>
 
           <button
+            disabled={!validateValue}
             className={`${
               validateValue ? "bg-green-700 hover:bg-green-800" : "bg-gray-500"
             }   py-2 rounded text-white font-semibold my-3 tracking-wide`}
@@ -125,6 +154,16 @@ const Register = () => {
             Register
           </button>
         </form>
+
+        <p>
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-bold text-green-700 hover:text-green-800 "
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </section>
   );
