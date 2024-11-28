@@ -348,6 +348,11 @@ export async function verifyForgotPasswordOtp(req, res) {
       });
     }
 
+    const updateUser = await UserModel.findByIdAndUpdate(user._id, {
+      forgot_password_otp: "",
+      forgot_password_expiry: "",
+    });
+
     return res.json({
       message: "OTP verified successfully",
       success: true,

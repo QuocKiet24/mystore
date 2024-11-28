@@ -6,16 +6,18 @@ import Axios from "../utils/Axios";
 import SummaryApi from "../common/SummaryApi";
 import AxiosToastError from "../utils/AxiosToastError";
 import { Link, useNavigate } from "react-router-dom";
+import FetchUserDetails from "../utils/FetchUserDetails";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../redux/UserSlice";
 
 const Login = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const HandleOnChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +42,12 @@ const Login = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
+        localStorage.setItem("accesstoken", response.data.data.accesstoken);
+        localStorage.setItem("refreshToken", response.data.data.refreshToken);
+
+        const userDetails = await FetchUserDetails();
+        dispatch(setUserDetails(userDetails.data));
+
         setData({
           email: "",
           password: "",
@@ -111,7 +119,7 @@ const Login = () => {
               validateValue ? "bg-green-700 hover:bg-green-800" : "bg-gray-500"
             }   py-2 rounded text-white font-semibold my-3 tracking-wide`}
           >
-            Register
+            Login
           </button>
         </form>
 

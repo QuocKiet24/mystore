@@ -32,6 +32,7 @@ const ResetPassword = () => {
         };
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const HandleOnChange = (e) => {
     const { name, value } = e.target;

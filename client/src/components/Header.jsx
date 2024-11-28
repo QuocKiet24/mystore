@@ -3,13 +3,36 @@ import logo from "../assets/logo.png";
 import Search from "./Search";
 import { FaRegUserCircle } from "react-icons/fa";
 import { BsCart4 } from "react-icons/bs";
+import { GoTriangleDown, GoTriangleUp } from "react-icons/go";
+
 import useMobile from "../hooks/useMobile";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import UserMenu from "./UserMenu";
 
 const Header = () => {
   const [isMobile] = useMobile();
   const location = useLocation();
   const navigate = useNavigate();
   const isSearchPage = location.pathname === "/search";
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const handleShowUserMenu = () => {
+    setShowUserMenu((prev) => !prev);
+  };
+
+  const handleMobileUser = () => {
+    if (!user._id) {
+      navigate("/login");
+      return;
+    }
+
+    navigate("/user");
+  };
+
+  const user = useSelector((state) => state?.user);
+  console.log("user from store", user);
+
   const redirectToLoginPage = () => {
     navigate("/login");
   };
@@ -44,18 +67,45 @@ const Header = () => {
           </div>
           {/* cart and login */}
           <div className="">
-            {/* user icons only display in mobile */}
-            <button className="lg:hidden text-neutral-600">
+            {/* user icons in mobile */}
+            <button
+              className="lg:hidden text-neutral-600"
+              onClick={handleMobileUser}
+            >
               <FaRegUserCircle size={20} />
             </button>
             {/* desktop */}
             <div className="hidden lg:flex items-center gap-12">
-              <button
-                onClick={redirectToLoginPage}
-                className="text-neutral-600 text-lg px-2"
-              >
-                Login
-              </button>
+              {user?._id ? (
+                <div className="relative">
+                  <div
+                    onClick={handleShowUserMenu}
+                    className="flex items-center gap-1 cursor-pointer select-none"
+                  >
+                    <p>Account</p>
+                    {showUserMenu ? (
+                      <GoTriangleUp size={20} />
+                    ) : (
+                      <GoTriangleDown size={20} />
+                    )}
+                  </div>
+                  {showUserMenu && (
+                    <div className="absolute top-12 right-0">
+                      <div className="bg-white shadow-lg p-4 rounded min-w-52 lg:shadow-lg">
+                        <UserMenu close={() => setShowUserMenu(false)} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={redirectToLoginPage}
+                  className="text-neutral-600 text-lg px-2"
+                >
+                  Login
+                </button>
+              )}
+
               <button className="flex items-center gap-2 bg-green-700 hover:bg-green-600 px-3 py-3 rounded text-white">
                 <div>
                   <BsCart4 size={26} />
