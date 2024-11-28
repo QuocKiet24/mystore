@@ -31,7 +31,6 @@ const Header = () => {
   };
 
   const user = useSelector((state) => state?.user);
-  console.log("user from store", user);
 
   const redirectToLoginPage = () => {
     navigate("/login");
