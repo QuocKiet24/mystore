@@ -6,6 +6,13 @@ import { useEffect } from "react";
 import FetchUserDetails from "./utils/FetchUserDetails";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "./redux/UserSlice";
+import {
+  setAllCategory,
+  setAllSubCategory,
+  setLoadingCategory,
+} from "./redux/ProductSlice";
+import Axios from "./utils/Axios";
+import SummaryApi from "./common/SummaryApi";
 
 function App() {
   const dispatch = useDispatch();
@@ -14,8 +21,47 @@ function App() {
     dispatch(setUserDetails(userData.data));
   };
 
+  const fetchCategory = async () => {
+    try {
+      dispatch(setLoadingCategory(true));
+      const response = await Axios({
+        ...SummaryApi.getCategory,
+      });
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        dispatch(
+          setAllCategory(
+            responseData.data.sort((a, b) => a.name.localeCompare(b.name))
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setLoadingCategory(false));
+    }
+  };
+
+  const fetchSubCategory = async () => {
+    const response = await Axios({
+      ...SummaryApi.getSubCategory,
+    });
+    const { data: responseData } = response;
+
+    if (responseData.success) {
+      dispatch(
+        setAllSubCategory(
+          responseData.data.sort((a, b) => a.name.localeCompare(b.name))
+        )
+      );
+    }
+  };
+
   useEffect(() => {
     FetchUser();
+    fetchCategory();
+    fetchSubCategory();
   }, []);
 
   return (

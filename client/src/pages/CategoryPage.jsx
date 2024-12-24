@@ -22,25 +22,6 @@ const CategoryPage = () => {
   const [deleteCategory, setDeleteCategory] = useState({
     _id: "",
   });
-  const fetchCategory = async () => {
-    try {
-      setLoading(true);
-      const response = await Axios({
-        ...SummaryApi.getCategory,
-      });
-      const { data: responseData } = response;
-
-      if (responseData.success) {
-        setCategoryData(responseData.data);
-      }
-
-      console.log(responseData);
-    } catch (error) {
-      AxiosToastError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDeleteCategory = async () => {
     try {
@@ -61,6 +42,26 @@ const CategoryPage = () => {
     }
   };
 
+  const fetchCategory = async () => {
+    try {
+      setLoading(true);
+      const response = await Axios({
+        ...SummaryApi.getCategory,
+      });
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        setCategoryData(responseData.data);
+      }
+
+      console.log(responseData);
+    } catch (error) {
+      AxiosToastError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCategory();
   }, []);
@@ -77,15 +78,25 @@ const CategoryPage = () => {
         </button>
       </div>
       {!categoryData[0] && !loading && <NoData />}
-      <div className="p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+      <div className="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {categoryData.map((category) => {
           return (
-            <div className="w-32 h-56 rounded shadow-md" key={category._id}>
-              <img
-                src={category.image}
-                alt={category.name}
-                className="w-40 object-scale-down"
-              />
+            <div
+              className="w-full h-full md:w-44 md:h-56 p-1 rounded border shadow-md"
+              key={category._id}
+            >
+              <div className="w-full h-40 flex items-center justify-center overflow-hidden">
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <h3 className="text-lg font-medium text-center">
+                {category.name}
+              </h3>
+
               <div className="flex items-center h-8 gap-2">
                 <button
                   onClick={() => {
