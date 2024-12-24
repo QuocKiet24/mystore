@@ -8,6 +8,7 @@ import SummaryApi from "../common/SummaryApi";
 import toast from "react-hot-toast";
 
 const UploadSubCategoryModel = ({ close, fetchData }) => {
+  const [loading, setLoading] = useState(false);
   const [subCategoryData, setSubCategoryData] = useState({
     name: "",
     image: "",
@@ -25,21 +26,28 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
   };
 
   const handleUploadImage = async (e) => {
-    const file = e.target.files[0];
+    try {
+      setLoading(true);
+      const file = e.target.files[0];
 
-    if (!file) {
-      return;
+      if (!file) {
+        return;
+      }
+
+      const response = await uploadImage(file);
+      const { data: ImageResponse } = response;
+
+      setSubCategoryData((prev) => {
+        return {
+          ...prev,
+          image: ImageResponse.data.url,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    const response = await uploadImage(file);
-    const { data: ImageResponse } = response;
-
-    setSubCategoryData((prev) => {
-      return {
-        ...prev,
-        image: ImageResponse.data.url,
-      };
-    });
   };
 
   const handleRemoveCategorySelected = (categoryId) => {
@@ -114,7 +122,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
               </div>
               <label htmlFor="uploadSubCategoryImage">
                 <div className="px-4 py-1 border border-primary-100 text-primary-200 rounded hover:bg-primary-200 hover:text-neutral-900 cursor-pointer  ">
-                  Upload Image
+                  {loading ? "Uploading..." : "Upload Image"}
                 </div>
                 <input
                   type="file"

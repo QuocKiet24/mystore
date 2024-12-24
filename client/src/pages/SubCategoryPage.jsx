@@ -8,8 +8,10 @@ import { HiPencil } from "react-icons/hi";
 import { createColumnHelper } from "@tanstack/react-table";
 import DisplayTable from "../components/DisplayTable";
 import ViewImage from "../components/ViewImage";
-
+import Loading from "../components/Loading";
 import ConfirmDialog from "../components/ConfirmDialog";
+import EditSubCategory from "../components/EditSubCategory";
+import toast from "react-hot-toast";
 
 const SubCategoryPage = () => {
   const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
@@ -25,6 +27,7 @@ const SubCategoryPage = () => {
   });
   const [openDeleteConfirmBox, setOpenDeleteConfirmBox] = useState(false);
   const columnHelper = createColumnHelper();
+
   const fetchSubCategory = async () => {
     try {
       setLoading(true);
@@ -116,6 +119,27 @@ const SubCategoryPage = () => {
     }),
   ];
 
+  const handleDeleteSubCategory = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.deleteSubCategory,
+        data: deleteSubCategory,
+      });
+
+      const { data: responseData } = response;
+      if (responseData.success) {
+        toast.success(responseData.message);
+        fetchSubCategory();
+        setOpenDeleteConfirmBox(false);
+        setDeleteSubCategory({ _id: "" });
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
+
+  if (loading) return <Loading />;
+
   return (
     <section className="">
       <div className="p-2   bg-white shadow-md flex items-center justify-between">
@@ -141,20 +165,19 @@ const SubCategoryPage = () => {
 
       {ImageURL && <ViewImage url={ImageURL} close={() => setImageURL("")} />}
 
-      {/* {
-          openEdit && 
-          // <EditSubCategory 
-          //   data={editData} 
-          //   close={()=>setOpenEdit(false)}
-          //   fetchData={fetchSubCategory}
-          // />
-        } */}
+      {openEdit && (
+        <EditSubCategory
+          data={editData}
+          close={() => setOpenEdit(false)}
+          fetchData={fetchSubCategory}
+        />
+      )}
 
       {openDeleteConfirmBox && (
         <ConfirmDialog
           cancel={() => setOpenDeleteConfirmBox(false)}
           close={() => setOpenDeleteConfirmBox(false)}
-          // confirm={handleDeleteSubCategory}
+          confirm={handleDeleteSubCategory}
         />
       )}
     </section>
