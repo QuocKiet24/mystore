@@ -14,6 +14,7 @@ const EditSubCategory = ({ close, data, fetchData }) => {
     image: data.image,
     category: data.category || [],
   });
+  const [loading, setLoading] = useState(false);
   const allCategory = useSelector((state) => state.product.allCategory);
 
   const handleChange = (e) => {
@@ -28,21 +29,28 @@ const EditSubCategory = ({ close, data, fetchData }) => {
   };
 
   const handleUploadSubCategoryImage = async (e) => {
-    const file = e.target.files[0];
+    try {
+      setLoading(true);
+      const file = e.target.files[0];
 
-    if (!file) {
-      return;
+      if (!file) {
+        return;
+      }
+
+      const response = await uploadImage(file);
+      const { data: ImageResponse } = response;
+
+      setSubCategoryData((preve) => {
+        return {
+          ...preve,
+          image: ImageResponse.data.url,
+        };
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-
-    const response = await uploadImage(file);
-    const { data: ImageResponse } = response;
-
-    setSubCategoryData((preve) => {
-      return {
-        ...preve,
-        image: ImageResponse.data.url,
-      };
-    });
   };
 
   const handleRemoveCategorySelected = (categoryId) => {
@@ -119,9 +127,10 @@ const EditSubCategory = ({ close, data, fetchData }) => {
               </div>
               <label htmlFor="uploadSubCategoryImage">
                 <div className="px-4 py-1 border border-primary-100 text-primary-200 rounded hover:bg-primary-200 hover:text-neutral-900 cursor-pointer  ">
-                  Upload Image
+                  {loading ? "Uploading..." : "Upload Image"}
                 </div>
                 <input
+                  disabled={loading}
                   type="file"
                   id="uploadSubCategoryImage"
                   className="hidden"

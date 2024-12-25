@@ -125,6 +125,7 @@ const UploadSubCategoryModel = ({ close, fetchData }) => {
                   {loading ? "Uploading..." : "Upload Image"}
                 </div>
                 <input
+                  disabled={loading}
                   type="file"
                   id="uploadSubCategoryImage"
                   className="hidden"
