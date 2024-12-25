@@ -6,6 +6,10 @@ import ViewImage from "../components/ViewImage";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
+import AxiosToastError from "../utils/AxiosToastError";
+import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import successAlert from "../utils/SuccessAlert";
 
 const UploadProduct = () => {
   const [data, setData] = useState({
@@ -92,13 +96,42 @@ const UploadProduct = () => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await Axios({
+        ...SummaryApi.createProduct,
+        data: data,
+      });
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        successAlert(responseData.message);
+        setData({
+          name: "",
+          image: [],
+          category: [],
+          subCategory: [],
+          unit: "",
+          stock: "",
+          price: "",
+          discount: "",
+          description: "",
+          more_details: {},
+        });
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
+
   return (
     <section>
       <div className="p-4  bg-white shadow-md flex items-center justify-between">
         <h2 className="text-xl font-bold">Upload Product</h2>
       </div>
       <div className="grid p-3">
-        <form className="grid gap-4">
+        <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-1">
             <label htmlFor="name">Name</label>
             <input
@@ -339,6 +372,9 @@ const UploadProduct = () => {
               className="bg-blue-50 p-2 outline-none border focus-within:border-primary-200 rounded"
             />
           </div>
+          <button className="bg-primary-100 hover:bg-primary-200 py-2 rounded font-semibold">
+            Submit
+          </button>
         </form>
       </div>
       {ViewImageURL && (

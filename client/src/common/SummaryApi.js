@@ -77,6 +77,38 @@ const SummaryApi = {
     url: "/api/subcategory/delete",
     method: "delete",
   },
+  createProduct: {
+    url: "/api/product/create",
+    method: "POST",
+  },
+  updateProduct: {
+    url: "/api/product/update-product-details",
+    method: "PUT",
+  },
+  deleteProduct: {
+    url: "/api/product/delete-product",
+    method: "DELETE",
+  },
+  getProductByCategory: {
+    url: "/api/subcategory/get-product-by-category",
+    method: "get",
+  },
+  getProductByCategoryAndSubCategory: {
+    url: "/api/product/get-pruduct-by-category-and-subcategory",
+    method: "get",
+  },
+  getProductDetail: {
+    url: "/api/product/get-product-details",
+    method: "get",
+  },
+  getProduct: {
+    url: "/api/product/get",
+    method: "GET",
+  },
+  searchProduct: {
+    url: "/api/product/search-product",
+    method: "POST",
+  },
 };
 
 export default SummaryApi;
