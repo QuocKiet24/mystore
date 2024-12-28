@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import FetchUserDetails from "./utils/FetchUserDetails";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserDetails } from "./redux/UserSlice";
 import {
   setAllCategory,
@@ -16,9 +16,14 @@ import SummaryApi from "./common/SummaryApi";
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state?.user);
+
   const FetchUser = async () => {
-    const userData = await FetchUserDetails();
-    dispatch(setUserDetails(userData.data));
+    if (user._id) {
+      const userData = await FetchUserDetails();
+      dispatch(setUserDetails(userData.data));
+    }
+    return null;
   };
 
   const fetchCategory = async () => {
@@ -67,7 +72,7 @@ function App() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
+      <main className="min-h-[78vh]">
         <Outlet />
       </main>
       <Footer />

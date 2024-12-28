@@ -9,6 +9,10 @@ export default {
         "secondary-200": "#00b050",
         "secondary-100": "#0b1a78",
       },
+      container: {
+        center: true, // Ensure the container is centered
+        padding: "1rem", // Add default padding
+      },
     },
   },
   plugins: [],

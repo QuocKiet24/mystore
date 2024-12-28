@@ -1,6 +1,5 @@
 import SummaryApi from "../common/SummaryApi";
 import Axios from "./Axios";
-import AxiosToastError from "./AxiosToastError";
 
 const FetchUserDetails = async () => {
   try {
@@ -10,7 +9,7 @@ const FetchUserDetails = async () => {
 
     return response.data;
   } catch (error) {
-    AxiosToastError(error);
+    console.log(error);
   }
 };
 
