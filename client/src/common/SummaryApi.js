@@ -90,16 +90,16 @@ const SummaryApi = {
     method: "DELETE",
   },
   getProductByCategory: {
-    url: "/api/subcategory/get-product-by-category",
-    method: "get",
+    url: "/api/product/get-product-by-category",
+    method: "post",
   },
   getProductByCategoryAndSubCategory: {
     url: "/api/product/get-pruduct-by-category-and-subcategory",
-    method: "get",
+    method: "post",
   },
   getProductDetail: {
     url: "/api/product/get-product-details",
-    method: "get",
+    method: "post",
   },
   getProduct: {
     url: "/api/product/get",

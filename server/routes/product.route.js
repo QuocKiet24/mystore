@@ -16,12 +16,12 @@ const productRouter = Router();
 
 productRouter.post("/create", auth, admin, createProduct);
 productRouter.get("/get", getProduct);
-productRouter.get("/get-product-by-category", getProductByCategory);
-productRouter.get(
+productRouter.post("/get-product-by-category", getProductByCategory);
+productRouter.post(
   "/get-pruduct-by-category-and-subcategory",
   getProductByCategoryAndSubCategory
 );
-productRouter.get("/get-product-details", getProductDetail);
+productRouter.post("/get-product-details", getProductDetail);
 
 //update product
 productRouter.put("/update-product-details", auth, admin, updateProduct);

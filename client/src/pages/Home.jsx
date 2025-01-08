@@ -1,12 +1,31 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { valideURLConvert } from "../utils/valideURLConvert";
+import CategoryWiseProductDisplay from "../components/CategoryWiseProductDisplay ";
 
 const Home = () => {
   const bannerUrl = "https://placehold.co/2560x470.png";
   const mobileBannerUrl = "https://placehold.co/1200x900.png";
   const loadingCategory = useSelector((state) => state.product.loadingCategory);
   const category = useSelector((state) => state.product.allCategory);
+  const subCategoryData = useSelector((state) => state.product.allSubCategory);
+  const navigate = useNavigate();
 
   const categorySkeleton = new Array(10).fill(null);
+
+  const handleRedirectProductListPage = (id, cat) => {
+    const subcategory = subCategoryData.find((item) => {
+      const filterData = item.category.some((c) => {
+        return c._id == id;
+      });
+
+      return filterData ? true : null;
+    });
+    const url = `/${valideURLConvert(cat)}-${id}/${valideURLConvert(
+      subcategory.name
+    )}-${subcategory._id}`;
+    navigate(url);
+  };
 
   return (
     <section className="bg-white py-2">
@@ -43,7 +62,12 @@ const Home = () => {
           : category.map((item) => (
               <div key={item._id + "category"} className="w-full h-full">
                 <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 lg:w-24 lg:h-24 mb-2">
+                  <div
+                    className="w-16 h-16 lg:w-24 lg:h-24 mb-2"
+                    onClick={() =>
+                      handleRedirectProductListPage(item._id, item.name)
+                    }
+                  >
                     <img
                       src="https://placehold.co/500x500.png"
                       alt="product image"
@@ -56,6 +80,18 @@ const Home = () => {
                 </div>
               </div>
             ))}
+      </div>
+      <div className="container mx-auto">
+        {/***display category product */}
+        {category?.map((c) => {
+          return (
+            <CategoryWiseProductDisplay
+              key={c?._id + "CategorywiseProduct"}
+              id={c?._id}
+              name={c?.name}
+            />
+          );
+        })}
       </div>
     </section>
   );

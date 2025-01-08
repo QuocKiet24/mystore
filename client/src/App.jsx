@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import FetchUserDetails from "./utils/FetchUserDetails";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserDetails } from "./redux/UserSlice";
 import {
   setAllCategory,
@@ -16,14 +16,10 @@ import SummaryApi from "./common/SummaryApi";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state?.user);
 
   const FetchUser = async () => {
-    if (user._id) {
-      const userData = await FetchUserDetails();
-      dispatch(setUserDetails(userData.data));
-    }
-    return null;
+    const userData = await FetchUserDetails();
+    dispatch(setUserDetails(userData.data));
   };
 
   const fetchCategory = async () => {
